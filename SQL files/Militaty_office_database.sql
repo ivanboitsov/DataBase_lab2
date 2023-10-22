@@ -138,3 +138,13 @@ CREATE TABLE "Род войск-Гражданин"
     FOREIGN KEY (Код_приказа) REFERENCES "Приказ на отправку" (Код_приказа),
     FOREIGN KEY (Код_гражданина) REFERENCES Гражданин (Код_гражданина)
 );
+CREATE TABLE "Медкомиссия-Врач"
+(
+    Код_медкомиссии SERIAL,
+    Код_врача SERIAL,
+
+    PRIMARY KEY (Код_медкомиссии, Код_врача),
+
+    FOREIGN KEY (Код_медкомиссии) REFERENCES Медкомиссия (Код_медкомиссии),
+    FOREIGN KEY (Код_врача) REFERENCES Врач (Код_врача)
+);
