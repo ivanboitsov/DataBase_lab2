@@ -2,7 +2,7 @@ CREATE TABLE Военкомат
 (
     Код_военкомата SERIAL UNIQUE,
     Адрес VARCHAR,
-    Телефон VARCHAR,
+    Номер_телефона VARCHAR,
 
     PRIMARY KEY (Код_военкомата)
 );
@@ -13,11 +13,9 @@ CREATE TABLE Персонал
     Фамилия VARCHAR,
     Имя VARCHAR,
     Отчество VARCHAR,
-    Пол VARCHAR,
-    CHECK (Пол = 'МУЖСКОЙ' OR Пол = 'ЖЕНСКИЙ'),
     Дата_рождения DATE,
-    Должность VARCHAR,
-    CHECK (Должность = 'Сотрудник'), /* Дописать чекер */
+    Должность_сотрудника VARCHAR,
+    CHECK (Должность_сотрудника = 'Сотрудник'), /* Дописать чекер */
     Адрес_проживания VARCHAR,
     Номер_телефона VARCHAR,
 
@@ -43,18 +41,6 @@ CREATE TABLE Гражданин
 
     PRIMARY KEY (Код_гражданина)
 );
-CREATE TABLE Категория
-(
-    Код_категории SERIAL UNIQUE,
-    Код_гражданина SERIAL,
-    Код_сотрудника SERIAL,
-    Тип VARCHAR,
-
-    PRIMARY KEY (Код_гражданина, Код_категории),
-
-    FOREIGN KEY (Код_сотрудника) REFERENCES Персонал (Код_сотрудника)
-);
-
 CREATE TABLE Медкомиссия
 (
     Код_медкомиссии SERIAL UNIQUE,
@@ -67,13 +53,13 @@ CREATE TABLE Медкомиссия
 );
 CREATE TABLE Врач
 (
-    Код_медкомиссии SERIAL,
     Код_врача SERIAL UNIQUE,
+    Код_медкомиссии SERIAL,
     Фамилия VARCHAR,
     Имя VARCHAR,
     Отчество VARCHAR,
-    Должность VARCHAR,
-    CHECK (Должность = 'Должность'), /* Дописать чекер */
+    Должность_врача VARCHAR,
+    CHECK (Должность_врача = 'Должность'), /* Дописать чекер */
 
     PRIMARY KEY (Код_врача),
 
@@ -84,25 +70,23 @@ CREATE TABLE "Заключение врача"
     Код_заключения SERIAL UNIQUE,
     Код_врача SERIAL,
     Код_гражданина SERIAL,
-    Должность_врача VARCHAR,
     Результат VARCHAR,
 
     PRIMARY KEY (Код_гражданина, Код_врача, Код_заключения),
 
     FOREIGN KEY (Код_врача) REFERENCES Врач (Код_врача),
-    FOREIGN KEY (Код_гражданина) REFERENCES Гражданин (Код_гражданина),
-    FOREIGN KEY (Должность_врача) REFERENCES Врач (Должность)
+    FOREIGN KEY (Код_гражданина) REFERENCES Гражданин (Код_гражданина)
 );
-
-CREATE TABLE "Род войск"
+CREATE TABLE Категория
 (
-    Код_войска SERIAL UNIQUE,
-    Код_приказа SERIAL,
-    Название VARCHAR,
+    Код_категории SERIAL UNIQUE,
+    Код_гражданина SERIAL,
+    Код_сотрудника SERIAL,
+    Тип VARCHAR,
 
-    PRIMARY KEY (Код_войска),
+    PRIMARY KEY (Код_гражданина, Код_категории),
 
-    FOREIGN KEY (Код_приказа) REFERENCES "Приказ на отправку" (Код_приказа)
+    FOREIGN KEY (Код_сотрудника) REFERENCES Персонал (Код_сотрудника)
 );
 CREATE TABLE "Приказ на отправку"
 (
@@ -117,6 +101,17 @@ CREATE TABLE "Приказ на отправку"
     FOREIGN KEY (Код_военкомата) REFERENCES Военкомат (Код_военкомата),
     FOREIGN KEY (Код_сотрудника) REFERENCES Персонал (Код_сотрудника)
 );
+CREATE TABLE "Род войск"
+(
+    Код_войска SERIAL UNIQUE,
+    Код_приказа SERIAL,
+    Наименование VARCHAR,
+
+    PRIMARY KEY (Код_войска),
+
+    FOREIGN KEY (Код_приказа) REFERENCES "Приказ на отправку" (Код_приказа)
+);
+
 CREATE TABLE "Персонал-Приказы"
 (
     Код_сотрудника SERIAL,
