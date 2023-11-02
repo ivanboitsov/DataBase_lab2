@@ -64,7 +64,7 @@ VII. Уметь строить SQL-запросы на диалекте выбр
 
 ### ER - схема
 
-  ![image](https://github.com/ivanboitsov/DataBase_lab2/assets/118753603/8d1a9a85-8711-4850-a3e4-e8003b5574a4)
+  ![image](https://github.com/ivanboitsov/DataBase_lab2/assets/118753603/c10c43a6-e464-45f2-8795-bdddf8e43513)
 
 ---
 <a id="4"></a>
@@ -74,7 +74,7 @@ VII. Уметь строить SQL-запросы на диалекте выбр
 
   Схемы отношений:
 
-![image](https://github.com/ivanboitsov/DataBase_lab2/assets/118753603/61f4f2b1-4d28-4753-ae89-ad214c60aeac)
+![image](https://github.com/ivanboitsov/DataBase_lab2/assets/118753603/98cc1b5c-922e-4d09-aeec-13cd8b0f8da4)
 
 ![image](https://github.com/ivanboitsov/DataBase_lab2/assets/118753603/bd5d975b-2e98-4293-bf1b-9c866287d448)
 
