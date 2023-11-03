@@ -50,6 +50,7 @@ EXECUTE  FUNCTION  SET_CATEGORY_TYPE();
 
 
 -- Создание триггера на проверку правильности приказа
+/*
 CREATE OR REPLACE FUNCTION CHECK_B2_AND_D()
 RETURNS TRIGGER AS $$
 DECLARE
@@ -75,3 +76,4 @@ CREATE TRIGGER check_b2_and_d_trigger
 BEFORE INSERT ON "Приказ на отправку"
 FOR EACH ROW
 EXECUTE FUNCTION CHECK_B2_AND_D();
+/*

@@ -37,10 +37,10 @@ CREATE TABLE Гражданин
     Отчество VARCHAR NOT NULL,
     Пол VARCHAR,
     CHECK (Пол = 'Мужской' OR Пол = 'Женский'),
-    Дата_рождения DATE,
+    Дата_рождения DATE NOT NULL,
     CHECK (Дата_рождения > '1900-01-01'),
-    Серия_паспорта VARCHAR NOT NULL,
-    Номер_паспорта VARCHAR NOT NULL,
+    Серия_паспорта VARCHAR,
+    Номер_паспорта VARCHAR,
     Прописка VARCHAR,
     Адрес_проживания VARCHAR,
     Номер_телефона VARCHAR,
@@ -51,7 +51,7 @@ CREATE TABLE Медкомиссия
 (
     Код_медкомиссии SERIAL UNIQUE,
     Код_военкомата SERIAL,
-    Дата_приёма DATE,
+    Дата_приёма DATE NOT NULL,
 
     PRIMARY KEY (Код_военкомата, Код_медкомиссии),
 
@@ -76,7 +76,7 @@ CREATE TABLE "Заключение врача"
     Код_заключения SERIAL UNIQUE,
     Код_врача SERIAL,
     Код_гражданина SERIAL,
-    Результат VARCHAR,
+    Результат VARCHAR NOT NULL,
     CHECK (Результат = 'Годен'
         OR Результат = 'Ограниченно годен'
         OR Результат = 'Временно не годен'
@@ -93,7 +93,7 @@ CREATE TABLE Категория
     Код_категории SERIAL UNIQUE,
     Код_гражданина SERIAL,
     Код_сотрудника SERIAL,
-    Тип VARCHAR,
+    Тип VARCHAR NOT NULL,
     CHECK (Тип = 'А'
         OR Тип = 'Б'
         OR Тип = 'Б-1'
@@ -103,18 +103,8 @@ CREATE TABLE Категория
 
     PRIMARY KEY (Код_гражданина, Код_категории),
 
-    FOREIGN KEY (Код_сотрудника) REFERENCES Персонал (Код_сотрудника)
-);
-CREATE TABLE "Приказ на отправку"
-(
-    Код_приказа SERIAL UNIQUE,
-    Код_военкомата SERIAL,
-    Название VARCHAR,
-    Дата DATE,
-
-    PRIMARY KEY (Код_военкомата, Код_приказа),
-
-    FOREIGN KEY (Код_военкомата) REFERENCES Военкомат (Код_военкомата)
+    FOREIGN KEY (Код_сотрудника) REFERENCES Персонал (Код_сотрудника),
+    FOREIGN KEY (Код_гражданина) REFERENCES Гражданин  (Код_гражданина)
 );
 CREATE TABLE "Род войск"
 (
@@ -132,10 +122,27 @@ CREATE TABLE "Род войск"
 CREATE TABLE "Воинская часть"
 (
     Код_части SERIAL UNIQUE,
+    Код_войска SERIAL,
+    Наименование_части VARCHAR NOT NULL,
     Фамилия_командира VARCHAR,
     Имя_командира VARCHAR,
 
-    PRIMARY KEY (Код_части)
+    PRIMARY KEY (Код_войска, Код_части),
+
+    FOREIGN KEY (Код_войска) REFERENCES "Род войск" (Код_войска)
+);
+CREATE TABLE "Приказ на отправку"
+(
+    Код_приказа SERIAL UNIQUE,
+    Код_военкомата SERIAL,
+    Код_части SERIAL,
+    Название VARCHAR NOT NULL,
+    Дата DATE NOT NULL,
+
+    PRIMARY KEY (Код_военкомата, Код_приказа),
+
+    FOREIGN KEY (Код_военкомата) REFERENCES Военкомат (Код_военкомата),
+    FOREIGN KEY (Код_части) REFERENCES "Воинская часть" (Код_части)
 );
 CREATE TABLE "Медкомиссия-Врач"
 (
@@ -157,33 +164,36 @@ CREATE TABLE "Персонал-Приказы"
     FOREIGN KEY (Код_сотрудника) REFERENCES Персонал (Код_сотрудника),
     FOREIGN KEY (Код_приказа) REFERENCES "Приказ на отправку" (Код_приказа)
 );
-CREATE TABLE "Род войск-приказы"
-(
-    Код_приказа SERIAL,
-    Код_войска SERIAL,
-
-    PRIMARY KEY (Код_приказа, Код_войска),
-
-    FOREIGN KEY (Код_приказа) REFERENCES "Приказ на отправку" (Код_приказа),
-    FOREIGN KEY (Код_войска) REFERENCES "Род войск" (Код_войска)
-);
-CREATE TABLE "Род войск-воинская часть"
-(
-    Код_приказа SERIAL,
-    Код_части SERIAL,
-
-    PRIMARY KEY (Код_приказа, Код_части),
-
-    FOREIGN KEY (Код_приказа) REFERENCES "Приказ на отправку" (Код_приказа),
-    FOREIGN KEY (Код_части) REFERENCES "Воинская часть" (Код_части)
-);
-CREATE TABLE "Воинская часть-гражданин"
+CREATE TABLE "Гражданин-приказы"
 (
     Код_гражданина SERIAL,
-    Код_части SERIAL,
+    Код_приказа SERIAL,
+    Дата_приказа DATE NOT NULL,
 
-    PRIMARY KEY (Код_гражданина, Код_части),
+    PRIMARY KEY (Код_гражданина, Код_приказа),
 
-    FOREIGN KEY (Код_части) REFERENCES "Гражданин" ("Код_гражданина"),
-    FOREIGN KEY (Код_части) REFERENCES "Воинская часть" (Код_части)
+    FOREIGN KEY (Код_гражданина) REFERENCES "Гражданин" ("Код_гражданина"),
+    FOREIGN KEY (Код_приказа) REFERENCES "Приказ на отправку" (Код_приказа)
+);
+CREATE TABLE "Медкомиссия-Заключение врача"
+(
+    Код_медкомиссии SERIAL,
+    Код_заключения SERIAL,
+    Дата_заключения SERIAL NOT NULL,
+
+    PRIMARY KEY (Код_медкомиссии, Код_заключения),
+
+    FOREIGN KEY (Код_медкомиссии) REFERENCES Медкомиссия (Код_медкомиссии),
+    FOREIGN KEY (Код_заключения) REFERENCES  "Заключение врача" (Код_заключения)
+);
+CREATE TABLE "Гражданин-воинская часть"
+(
+  Код_гражданина SERIAL,
+  Код_части SERIAL,
+  Дата_службы DATE,
+
+  PRIMARY KEY (Код_гражданина, Код_части),
+
+  FOREIGN KEY (Код_гражданина) REFERENCES Гражданин (Код_гражданина),
+  FOREIGN KEY (Код_части) REFERENCES "Воинская часть" (Код_части)
 );
